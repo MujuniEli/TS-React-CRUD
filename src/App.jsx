@@ -1,4 +1,5 @@
 import React, { useState }  from 'react'
+import Task from './components/Task'
 
 
 export default function App() {
@@ -12,21 +13,26 @@ export default function App() {
 
   const addTask = () => {
       const task = {
-        id:todoList.length === 0 ? 1 : todoList[todoList.length] + 1,
+        id:todoList.length === 0 ? 1 : todoList[todoList.length -1].id + 1,
         taskName: newtask
       }
-      setTodoList([...todoList, task])
+      setTodoList(task.taskName !== "" ? [...todoList, task] : todoList)
   }
 
   const deleteTask = (id) => {
-        // const newTodoList = todoList.filter((task) => {
-        //     if(task.id === id){
-        //       return false;
-        //     }else {
-        //       return true;
-        //     }
-        // })
         setTodoList(todoList.filter((task) => task.id !== id))
+  }
+
+  const completeTask = (id) => {
+    setTodoList(
+      todoList.map((task) => {
+        if(task.id === id) {
+          return {...task, completed: true};
+        }else {
+          return task
+        }
+      })
+    )
   }
 
   return (
@@ -37,10 +43,15 @@ export default function App() {
       </div>
       <div className="list">
         {todoList.map((task) => {
-          return <div>
-                      <h3>{task.taskName}</h3> 
-                      <button onClick={() => deleteTask(task.id)}> - </button>
-                  </div>
+          return (
+                    <Task 
+                      taskName={task.taskName}
+                      id={task.id}
+                      completed={task.completed}
+                      deleteTask={deleteTask}
+                      completeTask={completeTask}
+                    />
+          )
         })}
       </div>
     </div>
